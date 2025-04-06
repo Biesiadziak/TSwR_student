@@ -21,13 +21,30 @@ class ManiuplatorModel:
         Please implement the calculation of the mass matrix, according to the model derived in the exercise
         (2DoF planar manipulator with the object at the tip)
         """
+        d1 = self.l1 / 2
+        d2 = self.l2 / 2
+
+        alfa = self.m1 * d1 ** 2 + self.m2 * (self.l1 ** 2 + d2 ** 2) + self.I_1 + self.I_2
+        beta = self.m2 * self.l1 * d2
+        gamma = self.m2 * d2 ** 2 + self.I_2
+        
         q1, q2, q1_dot, q2_dot = x
-        return NotImplementedError()
+
+        M = np.array([[alfa + 2 * beta * np.cos(q2), gamma + beta * np.cos(q2)],
+                      [gamma + beta * np.cos(q2), gamma]])
+        return M
 
     def C(self, x):
         """
         Please implement the calculation of the Coriolis and centrifugal forces matrix, according to the model derived
         in the exercise (2DoF planar manipulator with the object at the tip)
         """
+        d1 = self.l1 / 2
+        d2 = self.l2 / 2
+
+        beta = self.m2 * self.l1 * d2
+
         q1, q2, q1_dot, q2_dot = x
-        return NotImplementedError()
+        C = np.array([[-beta * np.sin(q2) * q2_dot, -beta * np.sin(q2) * (q1_dot + q2_dot)],
+                      [beta * np.sin(q2) * q1_dot, 0]])
+        return C
