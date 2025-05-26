@@ -19,6 +19,6 @@ class FeedbackLinearizationController(Controller):
 
         v = q_r_ddot + Kd*(np.array([q1_dot, q2_dot]) - q_r_dot) + Kp*(np.array([q1, q2]) - q_r)
 
-        v = self.model.M(x) @ v + self.model.C(x) @ np.array([q1_dot, q2_dot])
+        u = self.model.M(x) @ v + self.model.C(x) @ np.array([q1_dot, q2_dot])
         
-        return v
+        return u
