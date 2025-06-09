@@ -40,7 +40,6 @@ class MMAController(Controller):
             # Flatten into a single predicted state
             x_pred = np.concatenate([q_next, q_dot_next])
 
-            # Compute Euclidean error to current state (or future state if you have it)
             error = np.linalg.norm(x - x_pred)
 
             errors.append(error)
@@ -49,10 +48,13 @@ class MMAController(Controller):
 
 
     def calculate_control(self, x, q_r, q_r_dot, q_r_ddot):
+        Kp = 40
+        Kd = 30
+
         self.choose_model(x, self.prev_u)
         q = x[:2]
         q_dot = x[2:]
-        v = q_r_ddot # TODO: add feedback
+        v = q_r_ddot + Kd * (q_r_dot - q_dot) + Kp * (q_r - q)
         M = self.models[self.i].M(x)
         C = self.models[self.i].C(x)
         u = M @ v[:, np.newaxis] + C @ q_dot[:, np.newaxis]

@@ -18,7 +18,11 @@ class ESO:
     def update(self, q, u):
         self.states.append(copy(self.state))
         ### TODO implement ESO update
-        self.state += (self.A @ self.state + self.B @ u + self.L @ (q - self.W @ self.state)) * self.Tp
-
+        z = self.state.reshape(len(self.state), 1)
+        dx = self.A @ z + self.B @ u + self.L @ (q - self.W @ z)
+        dx = dx.reshape(1, len(dx))
+        # Euler integration step
+        self.state += (dx * self.Tp).flatten()
+        
     def get_state(self):
         return self.state
